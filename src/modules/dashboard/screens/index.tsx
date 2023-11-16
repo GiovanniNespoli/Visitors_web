@@ -1,12 +1,5 @@
-import { Link } from "react-router-dom";
-
 const DashBoard: React.FC = () => {
-  return (
-    <div>
-      <h1>Ola</h1>
-      <Link to={"/visitorlist"}>navegar</Link>
-    </div>
-  );
+  return <h1>ola</h1>;
 };
 
 export default DashBoard;
