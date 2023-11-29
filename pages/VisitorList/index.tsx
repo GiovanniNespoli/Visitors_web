@@ -18,15 +18,20 @@ import { MdModeEdit } from "react-icons/md";
 import { IoSaveSharp } from "react-icons/io5";
 import { PiTrashSimpleFill } from "react-icons/pi";
 import { format } from "date-fns";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useVisitors } from "../hooks/visitors";
 import IVisitors from "../interfaces/IVistors";
+import toast from "react-hot-toast";
 
 export default function ListVisitors() {
-  const { GetVisitors, DeleteVisitors } = useVisitors();
+  const { GetVisitors, DeleteVisitors, UpdateVisitors } = useVisitors();
 
   const [items, setItems] = useState<IVisitors[]>([]);
   const [editableRows, setEditableRows] = useState<number[]>([]);
+
+  const [updateName, setUpdateName] = useState("");
+  const [updatePhone, setUpdatePhone] = useState("");
+  const [updateEmail, setUpdateEmail] = useState("");
 
   const { data } = GetVisitors();
 
@@ -73,6 +78,9 @@ export default function ListVisitors() {
                             disabled={!isEditable}
                             color="black"
                             placeholder={item.name}
+                            onChange={(event) => {
+                              setUpdateName(event.target.value);
+                            }}
                           />
                         </Item>
                       </TableItem>
@@ -80,7 +88,10 @@ export default function ListVisitors() {
                         <Item>
                           <input
                             disabled={!isEditable}
-                            placeholder={item.name}
+                            placeholder={item.phone}
+                            onChange={(event) => {
+                              setUpdatePhone(event.target.value);
+                            }}
                           />
                         </Item>
                       </TableItem>
@@ -88,7 +99,10 @@ export default function ListVisitors() {
                         <Item>
                           <input
                             disabled={!isEditable}
-                            placeholder={item.name}
+                            placeholder={item.email}
+                            onChange={(event) => {
+                              setUpdateEmail(event.target.value);
+                            }}
                           />
                         </Item>
                       </TableItem>
@@ -105,7 +119,19 @@ export default function ListVisitors() {
                       <TableItem>
                         <TableIcons>
                           {isEditable ? (
-                            <button onClick={() => toggleEdit(index)}>
+                            <button
+                              onClick={async () => {
+                                await UpdateVisitors({
+                                  id: item.id,
+                                  name: updateName || item.name,
+                                  phone: updatePhone || item.phone,
+                                  email: updateEmail || item.email,
+                                  createdAt: item.createdAt,
+                                  updatedAt: item.updatedAt,
+                                });
+                                toggleEdit(index);
+                              }}
+                            >
                               <IoSaveSharp size={20} />
                             </button>
                           ) : (

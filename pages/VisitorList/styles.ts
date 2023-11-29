@@ -117,6 +117,7 @@ export const Item = styled.div`
     border: none;
     background-color: ${theme.backgroundTable};
     color: ${theme.black};
+    font-size: 1rem;
 
     &::placeholder {
       font-size: 1rem;

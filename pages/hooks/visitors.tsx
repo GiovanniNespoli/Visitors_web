@@ -8,10 +8,12 @@ import {
 import IVisitors from "../interfaces/IVistors";
 import React, { createContext, useContext } from "react";
 import { api } from "../service/api";
+import toast from "react-hot-toast";
 
 interface IVisitorsContextData {
   GetVisitors(): UseQueryResult<IVisitors[]>;
   DeleteVisitors(id: number): Promise<any>;
+  UpdateVisitors(data: IVisitors): Promise<IVisitors>;
 }
 
 const VisitorsContext = createContext<IVisitorsContextData>(
@@ -32,14 +34,48 @@ const VisitorsProvider: React.FC = ({ children }) => {
     );
   };
 
-  const DeleteVisitors = useMutation(async (id: number) => {
-    const { data } = await api.delete<IVisitors>(`visitors/${id}`);
+  const DeleteVisitors = useMutation(
+    async (id: number) => {
+      const { data } = await api.delete<IVisitors>(`visitors/${id}`);
 
-    return data;
-  }).mutateAsync;
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Visitante deletado!");
+      },
+      onError: () => {
+        toast.error("Visitante não deletado!");
+      },
+    }
+  ).mutateAsync;
+
+  const UpdateVisitors = useMutation(
+    async (visitors: IVisitors) => {
+      console.log(visitors);
+
+      const { data } = await api.put<any>(`visitors/${visitors.id}`, {
+        name: visitors.name,
+        phone: visitors.phone,
+        email: visitors.email,
+      });
+
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success("Visitante editado!");
+      },
+      onError: () => {
+        toast.error("Visitante não editado!");
+      },
+    }
+  ).mutateAsync;
 
   return (
-    <VisitorsContext.Provider value={{ GetVisitors, DeleteVisitors }}>
+    <VisitorsContext.Provider
+      value={{ GetVisitors, DeleteVisitors, UpdateVisitors }}
+    >
       {children}
     </VisitorsContext.Provider>
   );
