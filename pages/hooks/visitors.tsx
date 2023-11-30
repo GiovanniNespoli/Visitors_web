@@ -5,7 +5,7 @@ import {
   useMutation,
   useQuery,
 } from "react-query";
-import IVisitors from "../interfaces/IVistors";
+import { IDataPerMonth, IVisitors } from "../interfaces/IVistors";
 import React, { createContext, useContext } from "react";
 import { api } from "../service/api";
 import toast from "react-hot-toast";
@@ -14,6 +14,9 @@ interface IVisitorsContextData {
   GetVisitors(): UseQueryResult<IVisitors[]>;
   DeleteVisitors(id: number): Promise<any>;
   UpdateVisitors(data: IVisitors): Promise<IVisitors>;
+  GetTodayVisitors(): UseQueryResult<IVisitors[]>;
+  GetMonthVisitors(): UseQueryResult<number>;
+  GetTotalPerMonthVisitors(): UseQueryResult<IDataPerMonth[]>;
 }
 
 const VisitorsContext = createContext<IVisitorsContextData>(
@@ -30,6 +33,45 @@ const VisitorsProvider: React.FC = ({ children }) => {
       },
       {
         refetchInterval: 1000,
+      }
+    );
+  };
+
+  const GetTodayVisitors = (): UseQueryResult<IVisitors[]> => {
+    return useQuery(
+      ["VISITORSPERDAY"] as QueryKey,
+      async () => {
+        const { data } = await api.get<IVisitors[]>("/visitors/perDay");
+        return data;
+      },
+      {
+        refetchInterval: 10000,
+      }
+    );
+  };
+
+  const GetMonthVisitors = (): UseQueryResult<number> => {
+    return useQuery(
+      ["VISITORSPERMONTH"] as QueryKey,
+      async () => {
+        const { data } = await api.get<number>("/visitors/perMonth");
+        return data;
+      },
+      {
+        refetchInterval: 10000,
+      }
+    );
+  };
+
+  const GetTotalPerMonthVisitors = (): UseQueryResult<IDataPerMonth[]> => {
+    return useQuery(
+      ["VISITORSMONTH"] as QueryKey,
+      async () => {
+        const { data } = await api.get<IDataPerMonth[]>("/visitors/all");
+        return data;
+      },
+      {
+        refetchInterval: 10000,
       }
     );
   };
@@ -52,8 +94,6 @@ const VisitorsProvider: React.FC = ({ children }) => {
 
   const UpdateVisitors = useMutation(
     async (visitors: IVisitors) => {
-      console.log(visitors);
-
       const { data } = await api.put<any>(`visitors/${visitors.id}`, {
         name: visitors.name,
         phone: visitors.phone,
@@ -74,7 +114,14 @@ const VisitorsProvider: React.FC = ({ children }) => {
 
   return (
     <VisitorsContext.Provider
-      value={{ GetVisitors, DeleteVisitors, UpdateVisitors }}
+      value={{
+        GetVisitors,
+        DeleteVisitors,
+        UpdateVisitors,
+        GetTodayVisitors,
+        GetMonthVisitors,
+        GetTotalPerMonthVisitors,
+      }}
     >
       {children}
     </VisitorsContext.Provider>

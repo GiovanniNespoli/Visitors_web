@@ -20,8 +20,7 @@ import { PiTrashSimpleFill } from "react-icons/pi";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useVisitors } from "../hooks/visitors";
-import IVisitors from "../interfaces/IVistors";
-import toast from "react-hot-toast";
+import { IVisitors } from "../interfaces/IVistors";
 
 export default function ListVisitors() {
   const { GetVisitors, DeleteVisitors, UpdateVisitors } = useVisitors();
@@ -36,7 +35,10 @@ export default function ListVisitors() {
   const { data } = GetVisitors();
 
   useEffect(() => {
-    if (data) setItems(data);
+    if (data)
+      setItems(
+        data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      );
   }, [data]);
 
   const toggleEdit = (index: number) => {
@@ -88,7 +90,9 @@ export default function ListVisitors() {
                         <Item>
                           <input
                             disabled={!isEditable}
-                            placeholder={item.phone}
+                            placeholder={
+                              item.phone ? item.phone : "Dado não informado"
+                            }
                             onChange={(event) => {
                               setUpdatePhone(event.target.value);
                             }}
@@ -99,7 +103,9 @@ export default function ListVisitors() {
                         <Item>
                           <input
                             disabled={!isEditable}
-                            placeholder={item.email}
+                            placeholder={
+                              item.email ? item.email : "Dado não informado"
+                            }
                             onChange={(event) => {
                               setUpdateEmail(event.target.value);
                             }}

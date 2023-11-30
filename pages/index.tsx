@@ -13,8 +13,24 @@ import {
 } from "./styles";
 import BiaxialLineChart from "@/pages/components/BiaxialLineChart";
 import BarProgress from "@/pages/components/BarProgress";
+import { useVisitors } from "./hooks/visitors";
+import { useEffect, useState } from "react";
+import { IVisitors } from "./interfaces/IVistors";
 
 export default function DashBoard() {
+  const { GetTodayVisitors, GetMonthVisitors, GetTotalPerMonthVisitors } =
+    useVisitors();
+  const [todayVisitor, setTodayVisitor] = useState<IVisitors[]>([]);
+  const [monthVisitor, setMonthVisitorVisitor] = useState<number>(0);
+
+  const day = GetTodayVisitors();
+  const month = GetMonthVisitors();
+
+  useEffect(() => {
+    if (day.data) setTodayVisitor(day.data);
+    if (month.data) setMonthVisitorVisitor(month.data);
+  }, [day, month]);
+
   return (
     <Layout>
       <Container>
@@ -31,7 +47,7 @@ export default function DashBoard() {
                   <h1>Visitantes do dia</h1>
                   <h1>20/11/2023</h1>
                 </GraphItem>
-                <p>2 visitantes</p>
+                <p>{todayVisitor.length} visitantes</p>
               </GraphSquad>
               <GraphSquad>
                 <GraphItem>
@@ -41,10 +57,11 @@ export default function DashBoard() {
                 <GraphTotalVisitors>
                   <GraphItem>
                     <h3>
-                      Meta de visitantes por mês: <GraphText>100</GraphText>
+                      Meta de visitantes por mês: <GraphText>15</GraphText>
                     </h3>
                     <h3>
-                      Total de visitantes do mês: <GraphText>80</GraphText>
+                      Total de visitantes do mês:{" "}
+                      <GraphText>{monthVisitor}</GraphText>
                     </h3>
                   </GraphItem>
                 </GraphTotalVisitors>
@@ -58,7 +75,7 @@ export default function DashBoard() {
             <h1>Total de visitantes por mês</h1>
             <br />
             <LineChartContent>
-              <BiaxialLineChart />
+              <BiaxialLineChart data={GetTotalPerMonthVisitors().data || []} />
             </LineChartContent>
           </Content>
         </Grid>

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import theme from "@/styles/theme";
 
 export const Container = styled.div`
@@ -21,10 +21,37 @@ export const GraphContent = styled.div`
   border-radius: 10px;
 `;
 
-export const FillGraph = styled.div`
-  width: 80%;
+function percentageColor(data: number) {
+  if (data >= 100) {
+    return css`
+      width: 100%;
+      background-color: ${theme.blue};
+    `;
+  }
+
+  if (data <= 33) {
+    return css`
+      width: ${data}%;
+      background-color: ${theme.red};
+    `;
+  }
+  if (data > 33 && data <= 66) {
+    return css`
+      width: ${data}%;
+      background-color: ${theme.yellow};
+    `;
+  }
+  if (data > 66) {
+    return css`
+      width: ${data}%;
+      background-color: ${theme.green};
+    `;
+  }
+}
+
+export const FillGraph = styled.div<{ total: number }>`
   height: 100%;
-  background-color: green;
+  ${(props) => percentageColor(props.total)}
   border-radius: 10px;
 `;
 

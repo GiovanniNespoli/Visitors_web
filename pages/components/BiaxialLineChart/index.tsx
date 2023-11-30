@@ -8,59 +8,18 @@ import {
   AreaChart,
 } from "recharts";
 import theme from "@/styles/theme";
+import { IDataPerMonth } from "@/pages/interfaces/IVistors";
+import { useEffect } from "react";
 
-const data = [
-  {
-    name: "Janeiro",
-    total: 5,
-  },
-  {
-    name: "Fevereiro",
-    total: 3,
-  },
-  {
-    name: "Março",
-    total: 10,
-  },
-  {
-    name: "Abril",
-    total: 32,
-  },
-  {
-    name: "Maio",
-    total: 23,
-  },
-  {
-    name: "Junho",
-    total: 15,
-  },
-  {
-    name: "Julho",
-    total: 10,
-  },
-  {
-    name: "Agosto",
-    total: 20,
-  },
-  {
-    name: "Setembro",
-    total: 17,
-  },
-  {
-    name: "Outubro",
-    total: 15,
-  },
-  {
-    name: "Novembro",
-    total: 22,
-  },
-  {
-    name: "Dezembro",
-    total: 40,
-  },
-];
+interface IChartProps {
+  data: IDataPerMonth[];
+}
 
-export default function BiaxialLineChart() {
+export default function BiaxialLineChart({ data }: IChartProps) {
+  useEffect(() => {
+    console.log("DATA", data);
+  }, [data]);
+
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>
@@ -74,12 +33,12 @@ export default function BiaxialLineChart() {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
           <Area
             type="linear"
-            dataKey="total"
+            dataKey="value"
             stroke={theme.primary}
             strokeWidth={2}
             fill={theme.linearChartBackgorund}

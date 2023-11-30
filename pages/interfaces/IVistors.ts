@@ -1,4 +1,4 @@
-export default interface IVisitors {
+interface IVisitors {
   id: number;
   name: string;
   phone: string;
@@ -6,3 +6,10 @@ export default interface IVisitors {
   createdAt: string;
   updatedAt: string;
 }
+
+interface IDataPerMonth {
+  month: string;
+  value: number;
+}
+
+export type { IDataPerMonth, IVisitors };
